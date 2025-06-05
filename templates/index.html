@@ -46,19 +46,31 @@
         </div>
     </div>
     <script>
-        const ws = new WebSocket('ws://myesp32.ddns.net:8081');
+        const ws = new WebSocket('ws://myesp32ps.ddns.net:8081'); // Use your No-IP hostname
+        ws.onopen = function () {
+            console.log("WebSocket connection opened");
+        };
         ws.onmessage = function (event) {
+            console.log("Received:", event.data);
             const data = JSON.parse(event.data);
             document.getElementById('temp').innerText = data.temperature;
             document.getElementById('hum').innerText = data.humidity;
             document.getElementById('led').innerText = data.ledState;
             document.getElementById('flood').innerText = data.floodCount;
         };
+        ws.onerror = function (error) {
+            console.error("WebSocket error:", error);
+        };
+        ws.onclose = function () {
+            console.log("WebSocket connection closed");
+        };
         function controlLed(state) {
-            fetch(`/led/${state}`)
-                .then(response => response.json())
-                .then(data => console.log("LED control response:", data))
-                .catch(error => console.error("LED control error:", error));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(state === 'on' ? 'led_on' : 'led_off');
+                console.log("Sent:", state === 'on' ? 'led_on' : 'led_off');
+            } else {
+                console.error("WebSocket not open. State:", ws.readyState);
+            }
         }
     </script>
 </body>

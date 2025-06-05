@@ -34,7 +34,7 @@ def on_open(ws):
     print("Connected to ESP32 WebSocket server")
 
 def start_websocket():
-    ws_url = "ws://myesp32.ddns.net:8081"
+    ws_url = "ws://myesp32ps.ddns.net:8081"  # Use your No-IP hostname
     ws = websocket.WebSocketApp(ws_url,
                                 on_open=on_open,
                                 on_message=on_message,
@@ -51,29 +51,6 @@ time.sleep(2)
 def index():
     print(f"Serving data: {esp32_data}")
     return render_template('index.html', data=esp32_data)
-
-@app.route('/led/<state>')
-def control_led(state):
-    print(f"Received LED control request: {state}")  # Debug
-    ws_url = "ws://myesp32.ddns.net:8081"
-    ws = websocket.WebSocket()
-    try:
-        ws.connect(ws_url)
-        if state == "on":
-            ws.send("led_on")
-            print("Sent: led_on")
-        elif state == "off":
-            ws.send("led_off")
-            print("Sent: led_off")
-        else:
-            print(f"Invalid state: {state}")
-            return {"status": "error", "message": "Invalid state"}, 400
-    except Exception as e:
-        print(f"LED control error: {e}")
-        return {"status": "error", "message": str(e)}, 500
-    finally:
-        ws.close()
-    return {"status": "success"}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
