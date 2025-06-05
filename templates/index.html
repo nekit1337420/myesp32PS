@@ -46,7 +46,7 @@
         </div>
     </div>
     <script>
-        const ws = new WebSocket('ws://192.168.137.243:81');
+        const ws = new WebSocket('ws://myesp32.ddns.net:8081');
         ws.onmessage = function (event) {
             const data = JSON.parse(event.data);
             document.getElementById('temp').innerText = data.temperature;

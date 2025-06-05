@@ -34,7 +34,7 @@ def on_open(ws):
     print("Connected to ESP32 WebSocket server")
 
 def start_websocket():
-    ws_url = "ws://192.168.137.243:81"
+    ws_url = "ws://myesp32.ddns.net:8081"
     ws = websocket.WebSocketApp(ws_url,
                                 on_open=on_open,
                                 on_message=on_message,
@@ -55,7 +55,7 @@ def index():
 @app.route('/led/<state>')
 def control_led(state):
     print(f"Received LED control request: {state}")  # Debug
-    ws_url = "ws://192.168.137.243:81"
+    ws_url = "ws://myesp32.ddns.net:8081"
     ws = websocket.WebSocket()
     try:
         ws.connect(ws_url)
